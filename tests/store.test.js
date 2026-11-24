@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { EXERCISES, SESSIONS, SCHEDULE, MILESTONES } from '../js/data.js';
 import {
   createStore, mergeRemote, phaseFor, sessionIdFor, defaultSets, readyToProgress, isClean,
-  weekSummary, seriesOf, prescription, mondayOf, addDays,
+  weekSummary, seriesOf, prescription, mondayOf, addDays, itemsFor,
 } from '../js/store.js';
 import { figureSVG, FIGURE_IDS } from '../js/figures.js';
 
@@ -80,7 +80,8 @@ test('progression prompt needs two clean sessions in a row', () => {
 
 test('weekly summary counts full sessions, pain and cycling', () => {
   const s = createStore(mem(), START);
-  for (const it of SESSIONS.homeA.items) s.setEntry('2026-11-23', it.ex, { done: true, pain: 2, sets: [{ v: 10, ok: true }] });
+  const homeA = itemsFor(s.state, '2026-11-23').items;
+  for (const it of homeA) s.setEntry('2026-11-23', it.ex, { done: true, pain: 2, sets: [{ v: 10, ok: true }] });
   s.setEntry('2026-11-24', 'hip-thrust', { done: true, pain: 4, sets: [{ v: 10, kg: 30, ok: true }] });
   s.setEntry('2026-11-24', 'cycling', { done: true, sets: [{ v: 35, ok: true }] });
   const w = weekSummary(s.state, '2026-11-23');
@@ -88,7 +89,7 @@ test('weekly summary counts full sessions, pain and cycling', () => {
   assert.equal(w.partial, 1);
   assert.equal(w.planned, 6);
   assert.equal(w.cycling, 35);
-  assert.equal(w.avgPain, (2 * 7 + 4) / 8);
+  assert.equal(w.avgPain, (2 * homeA.length + 4) / (homeA.length + 1));
 });
 
 test('history series picks the right metric', () => {

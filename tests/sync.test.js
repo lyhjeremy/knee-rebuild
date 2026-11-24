@@ -7,8 +7,8 @@ const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? nu
 
 // A tiny fake of the Supabase REST endpoints the app uses, with the same newest-wins rule as the SQL trigger.
 function fakeSupabase() {
-  const tables = { log_entries: new Map(), day_sessions: new Map(), milestones: new Map(), settings: new Map() };
-  const keys = { log_entries: ['user_id', 'log_date', 'exercise_id'], day_sessions: ['user_id', 'log_date'], milestones: ['user_id', 'milestone_id'], settings: ['user_id'] };
+  const tables = { log_entries: new Map(), day_sessions: new Map(), milestones: new Map(), settings: new Map(), checkins: new Map() };
+  const keys = { log_entries: ['user_id', 'log_date', 'exercise_id'], day_sessions: ['user_id', 'log_date'], milestones: ['user_id', 'milestone_id'], settings: ['user_id'], checkins: ['user_id', 'kind', 'log_date'] };
   let clock = 0;
   const calls = [];
   let tokenValid = true;

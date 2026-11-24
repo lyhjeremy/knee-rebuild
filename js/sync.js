@@ -9,6 +9,7 @@ const TABLES = {
   day: { table: 'day_sessions', conflict: 'user_id,log_date' },
   ms: { table: 'milestones', conflict: 'user_id,milestone_id' },
   settings: { table: 'settings', conflict: 'user_id' },
+  ck: { table: 'checkins', conflict: 'user_id,kind,log_date' },
 };
 
 export function createSync(store, storage, fetchImpl = (...a) => fetch(...a)) {
@@ -108,6 +109,12 @@ export function createSync(store, storage, fetchImpl = (...a) => fetch(...a)) {
       const m = st.milestones[id];
       if (!m) return null;
       return { ts: m.ts, row: { user_id: uid, milestone_id: id, achieved: m.achieved, achieved_on: m.date, client_ts: m.ts } };
+    }
+    if (kind === 'ck') {
+      const [, ckKind, date] = key.split('|');
+      const c = st.checkins?.[`${ckKind}|${date}`];
+      if (!c) return null;
+      return { ts: c.ts, row: { user_id: uid, kind: ckKind, log_date: date, data: c.data, client_ts: c.ts } };
     }
     if (kind === 'settings') {
       const { ts, ...data } = st.settings;
@@ -275,6 +282,7 @@ export function createSync(store, storage, fetchImpl = (...a) => fetch(...a)) {
       for (const exId of Object.keys(d.entries)) st.outbox[`log|${date}|${exId}`] = 1;
     }
     for (const id of Object.keys(st.milestones)) st.outbox[`ms|${id}`] = 1;
+    for (const key of Object.keys(st.checkins || {})) st.outbox[`ck|${key}`] = 1;
     if (st.settings.ts) st.outbox.settings = 1;
     store.save();
   }

@@ -8,7 +8,7 @@ create table if not exists public.log_entries (
   exercise_id text not null,
   session_id  text,
   done        boolean,                         -- true = done, false = not done, null = in progress
-  sets        jsonb not null default '[]',     -- [{"v": reps|seconds|minutes, "kg": number|null, "ok": bool}]
+  sets        jsonb not null default '[]',     -- [{"v": reps|seconds|minutes (left side for L/R moves), "vr": right side, "kg": number|null, "ok": bool}]
   pain        smallint check (pain between 0 and 10),
   notes       text[] not null default '{}',
   weight_kg   numeric,                         -- heaviest completed set, for quick queries
@@ -37,6 +37,17 @@ create table if not exists public.milestones (
   primary key (user_id, milestone_id)
 );
 
+-- Morning check (kind 'daily', keyed by date) and weekly check (kind 'weekly', keyed by the week's Monday).
+create table if not exists public.checkins (
+  user_id   uuid not null default auth.uid() references auth.users on delete cascade,
+  kind      text not null check (kind in ('daily', 'weekly')),
+  log_date  date not null,
+  data      jsonb not null default '{}',   -- daily: {stairs, soreness}; weekly: {steps, walkPain, calfL, calfR}
+  client_ts bigint not null,
+  server_ts timestamptz not null default now(),
+  primary key (user_id, kind, log_date)
+);
+
 -- Start date, rest times, custom demo links.
 create table if not exists public.settings (
   user_id   uuid primary key default auth.uid() references auth.users on delete cascade,
@@ -60,7 +71,7 @@ end $$;
 do $$
 declare t text;
 begin
-  foreach t in array array['log_entries', 'day_sessions', 'milestones', 'settings'] loop
+  foreach t in array array['log_entries', 'day_sessions', 'milestones', 'settings', 'checkins'] loop
     execute format('drop trigger if exists kr_touch on public.%I', t);
     execute format('create trigger kr_touch before insert or update on public.%I for each row execute function public.kr_touch()', t);
     execute format('alter table public.%I enable row level security', t);
@@ -74,3 +85,4 @@ end $$;
 create index if not exists log_entries_server_ts on public.log_entries (user_id, server_ts);
 create index if not exists day_sessions_server_ts on public.day_sessions (user_id, server_ts);
 create index if not exists milestones_server_ts on public.milestones (user_id, server_ts);
+create index if not exists checkins_server_ts on public.checkins (user_id, server_ts);

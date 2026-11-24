@@ -14,7 +14,7 @@ export const CATEGORIES = {
 
 export const EXERCISES = {
   'glute-bridge': {
-    name: 'Glute bridge', cat: 'hips', mode: 'reps', sets: 3, reps: 12,
+    name: 'Glute bridge', cat: 'hips', mode: 'reps', sets: 3, reps: 12, rest: 'light',
     tempo: '1 s up, 2 s squeeze, 2 s down',
     note: 'Squeeze 2 s at the top.',
     steps: [
@@ -27,7 +27,7 @@ export const EXERCISES = {
     demo: 'glute bridge exercise form',
   },
   'sl-glute-bridge': {
-    name: 'Single-leg glute bridge', cat: 'hips', mode: 'reps', sets: 2, reps: 8, perSide: true,
+    name: 'Single-leg glute bridge', cat: 'hips', mode: 'reps', sets: 2, reps: 8, perSide: true, rest: 'light',
     tempo: '1 s up, 1 s pause, 2 s down',
     note: 'Add once double-leg is easy.',
     steps: [
@@ -40,7 +40,7 @@ export const EXERCISES = {
     demo: 'single leg glute bridge form',
   },
   'side-leg-raise': {
-    name: 'Side-lying leg raise', cat: 'hips', mode: 'reps', sets: 3, reps: 12, perSide: true,
+    name: 'Side-lying leg raise', cat: 'hips', mode: 'reps', sets: 3, reps: 12, perSide: true, rest: 'light',
     tempo: '1 s up, 2 to 3 s down',
     note: 'Toes forward, slow down.',
     steps: [
@@ -53,7 +53,7 @@ export const EXERCISES = {
     demo: 'side lying hip abduction leg raise form',
   },
   'clamshell': {
-    name: 'Banded clamshell', cat: 'hips', mode: 'reps', sets: 3, reps: 15, perSide: true,
+    name: 'Banded clamshell', cat: 'hips', mode: 'reps', sets: 3, reps: 15, perSide: true, rest: 'light',
     tempo: '1 s open, 1 s pause, 2 s close',
     note: 'Light band above knees.',
     steps: [
@@ -66,7 +66,7 @@ export const EXERCISES = {
     demo: 'banded clamshell exercise form',
   },
   'side-plank': {
-    name: 'Side plank', cat: 'core', mode: 'time', sets: 3, secs: [20, 30], perSide: true,
+    name: 'Side plank', cat: 'core', mode: 'time', sets: 3, secs: [20, 30], perSide: true, rest: 'light',
     note: 'From knees if needed.',
     steps: [
       'Lie on your side with your elbow directly under your shoulder.',
@@ -78,7 +78,7 @@ export const EXERCISES = {
     demo: 'side plank from knees form',
   },
   'short-foot': {
-    name: 'Short foot (arch doming)', cat: 'feet', mode: 'reps', sets: 3, reps: 10, perSide: true,
+    name: 'Short foot (arch doming)', cat: 'feet', mode: 'reps', sets: 3, reps: 10, perSide: true, inRests: true, rest: 'light', repSecs: 6,
     tempo: '5 s hold per rep',
     note: 'Draw the ball of the foot toward the heel, toes relaxed.',
     steps: [
@@ -91,7 +91,7 @@ export const EXERCISES = {
     demo: 'short foot exercise arch doming',
   },
   'sl-balance': {
-    name: 'Single-leg balance', cat: 'feet', mode: 'time', sets: 3, secs: 30, perSide: true,
+    name: 'Single-leg balance', cat: 'feet', mode: 'time', sets: 3, secs: 30, perSide: true, lr: true, inRests: true, rest: 'light',
     note: 'Arch lifted; eyes closed later.',
     steps: [
       'Stand on one leg next to a wall or counter in case you need it.',
@@ -116,7 +116,7 @@ export const EXERCISES = {
     demo: 'slow sit to stand exercise',
   },
   'step-down': {
-    name: 'Slow step-down from low step', cat: 'knee', mode: 'reps', sets: 3, reps: 8, perSide: true,
+    name: 'Slow step-down from low step', cat: 'knee', mode: 'reps', sets: 3, reps: 8, perSide: true, lr: true,
     tempo: '3 to 4 s down, 1 s up',
     note: 'Knee over 2nd toe.',
     steps: [
@@ -143,18 +143,19 @@ export const EXERCISES = {
   'band-tke': {
     name: 'Banded terminal knee extension', cat: 'knee', mode: 'reps', sets: 3, reps: 15, perSide: true,
     tempo: '1 s straighten, 2 s squeeze, 1 s release',
-    note: 'Band behind knee, squeeze quad.',
+    note: 'Band behind knee, squeeze quad. Stop just short of locking the knee.',
+    caution: 'tke',
     steps: [
       'Anchor a band at knee height, loop it behind one knee and step back until it pulls.',
       'Start with that knee slightly bent and the heel down.',
-      'Straighten the knee fully by tightening the thigh, pushing the back of the knee into the band.',
+      'Straighten the knee by tightening the thigh, stopping just short of locked. Never push past straight.',
       'Hold the squeeze for 2 seconds, then let the knee bend slowly.',
     ],
     progress: 'Step farther back for more band tension.',
     demo: 'banded terminal knee extension',
   },
   'calf-raise': {
-    name: 'Slow calf raise, arch lifted', cat: 'feet', mode: 'reps', sets: 2, reps: 10,
+    name: 'Slow calf raise, arch lifted', cat: 'feet', mode: 'reps', sets: 2, reps: 10, rest: 'light',
     tempo: '1 s up, 3 s down',
     note: 'Bodyweight only. No heavy calf raises.',
     steps: [
@@ -166,8 +167,69 @@ export const EXERCISES = {
     progress: 'Work toward single-leg raises. Milestone: 20 each side without pain.',
     demo: 'slow calf raise exercise',
   },
+  'sl-calf-raise': {
+    name: 'Single-leg calf raise, arch lifted', cat: 'feet', mode: 'reps', sets: 3, reps: [12, 20], perSide: true, lr: true, rest: 'light',
+    tempo: '1 s up, 3 s down',
+    note: 'Bodyweight only. Build toward 20 each side (a running milestone).',
+    steps: [
+      'Stand on one foot on flat floor, fingertips on a wall for balance, other foot lifted behind you.',
+      'Lift the arch (short-foot position) and keep your weight over the big and second toes.',
+      'Rise as high as you can in 1 second without the ankle rolling outward.',
+      'Lower over 3 seconds. Do all reps on one side, then the other.',
+    ],
+    progress: 'Add reps toward 20 each side. Keep it bodyweight.',
+    demo: 'single leg calf raise bodyweight',
+  },
+  'bent-calf-raise': {
+    name: 'Bent-knee calf raise', cat: 'feet', mode: 'reps', sets: 2, reps: 15, rest: 'light', inRests: true,
+    tempo: '1 s up, 3 s down',
+    note: 'Works the lower calf (soleus), which takes most of the load when running.',
+    steps: [
+      'Stand holding a wall with both knees bent about 20 to 30 degrees, as if starting to sit.',
+      'Keep the knees bent the whole time and rise onto your toes.',
+      'Lower over 3 seconds without straightening the knees.',
+    ],
+    progress: 'Move to one leg at a time once 2 x 15 is easy.',
+    demo: 'bent knee calf raise soleus',
+  },
+  'tib-raise': {
+    name: 'Tibialis raise (toe raise)', cat: 'feet', mode: 'reps', sets: 2, reps: 15, rest: 'light', inRests: true,
+    tempo: '1 s up, 2 s down',
+    note: 'For the shin. Stop if it brings on shin pain.',
+    steps: [
+      'Stand with your back and bottom against a wall, heels about 30 cm out from it.',
+      'Keep your legs straight and lift your toes and the balls of your feet as high as you can.',
+      'Lower slowly over 2 seconds, without letting the toes slap down.',
+    ],
+    progress: 'Move your heels a little farther from the wall.',
+    demo: 'tibialis raise wall',
+  },
+  'pogo-hops': {
+    name: 'Pogo hops, both legs', cat: 'knee', mode: 'reps', sets: 3, reps: 15, repSecs: 1,
+    note: 'Phase 3. Small, quick, quiet hops. Stop if knee pain goes above 2.',
+    steps: [
+      'Stand tall with feet hip-width apart, knees soft.',
+      'Hop a few centimeters off the floor using mostly your ankles, staying on the balls of your feet.',
+      'Land quietly and bounce straight into the next hop, keeping the knees over the toes.',
+      'Count only hops with good, quiet landings.',
+    ],
+    progress: 'When 3 x 15 is easy and pain-free, add single-leg hops.',
+    demo: 'pogo hops beginner',
+  },
+  'sl-hops': {
+    name: 'Single-leg hops', cat: 'knee', mode: 'reps', sets: 2, reps: 10, perSide: true, lr: true, repSecs: 1,
+    note: 'Phase 3, from week 11. Low hops on the spot. Stop if knee pain goes above 2.',
+    steps: [
+      'Stand on one leg next to a wall, knee soft and over the second toe.',
+      'Do small hops on the spot, landing softly on the ball of the foot.',
+      'Keep the hips level and the knee from caving inward.',
+      'Do all hops on one side, then the other.',
+    ],
+    progress: 'Keep the volume low until running starts.',
+    demo: 'single leg pogo hops',
+  },
   'push-up': {
-    name: 'Incline or knee push-up', cat: 'upper', mode: 'reps', sets: 2, reps: [8, 12],
+    name: 'Incline or knee push-up', cat: 'upper', mode: 'reps', sets: 2, reps: [8, 12], rest: 'light',
     tempo: '2 s down, 1 s up',
     note: 'Upper body block, about 5 min.',
     steps: [
@@ -180,7 +242,7 @@ export const EXERCISES = {
     demo: 'incline push up form',
   },
   'band-row': {
-    name: 'Towel or band row', cat: 'upper', mode: 'reps', sets: 2, reps: 12,
+    name: 'Towel or band row', cat: 'upper', mode: 'reps', sets: 2, reps: 12, rest: 'light',
     tempo: '1 s pull, 1 s squeeze, 2 s return',
     note: 'Squeeze shoulder blades.',
     steps: [
@@ -193,7 +255,7 @@ export const EXERCISES = {
     demo: 'resistance band row at home',
   },
   'plank': {
-    name: 'Plank', cat: 'core', mode: 'time', sets: 2, secs: 30,
+    name: 'Plank', cat: 'core', mode: 'time', sets: 2, secs: 30, rest: 'light',
     note: 'Straight line, breathe.',
     steps: [
       'Forearms on the floor, elbows under your shoulders.',
@@ -319,11 +381,12 @@ export const EXERCISES = {
   'cable-tke': {
     name: 'Cable terminal knee extension', cat: 'knee', mode: 'reps', sets: 3, reps: 15, perSide: true, weighted: true,
     tempo: '1 s straighten, 2 s squeeze, 1 s release',
-    note: 'For the tired-above-knee feeling.',
+    note: 'For the tired-above-knee feeling. Stop just short of locking the knee.',
+    caution: 'tke',
     steps: [
       'Loop a strap from a low-to-middle cable behind one knee and face the machine.',
       'Step back until there is tension, with that knee slightly bent and the heel down.',
-      'Straighten the knee fully by tightening the thigh muscle just above the knee.',
+      'Straighten the knee by tightening the thigh muscle just above the knee, stopping just short of locked. Never push past straight.',
       'Hold for 2 seconds, then let the knee bend slowly.',
     ],
     progress: 'Add one weight step.',
@@ -355,46 +418,73 @@ export const EXERCISES = {
   },
 };
 
-// Session templates. Items may override sets.
+// Session templates. Items may override sets, reps, secs, mins or note, and can be limited
+// to phases with from/to (phase numbers) or fromWeek. Phase 2 and 3 versions switch in
+// automatically; a day can be set to the Phase 1 versions ("easier version").
 export const SESSIONS = {
   homeA: {
-    name: 'Home A', title: 'Hips and glutes + feet', mins: '25 min', kind: 'home',
+    name: 'Home A', title: 'Hips and glutes + feet', kind: 'home',
     items: [
-      { ex: 'glute-bridge' }, { ex: 'sl-glute-bridge' }, { ex: 'side-leg-raise' },
-      { ex: 'clamshell' }, { ex: 'side-plank' }, { ex: 'short-foot' }, { ex: 'sl-balance' },
+      { ex: 'glute-bridge', to: 1 },
+      { ex: 'sl-glute-bridge', to: 1 },
+      { ex: 'sl-glute-bridge', from: 2, sets: 3, reps: 10, note: 'Phase 2: single-leg version for all sets.' },
+      { ex: 'side-leg-raise' }, { ex: 'clamshell' }, { ex: 'side-plank' },
+      { ex: 'sl-calf-raise', from: 2, note: 'Phase 2: single-leg calf raises move to Home A days.' },
+      { ex: 'short-foot' },
+      { ex: 'tib-raise' },
+      { ex: 'sl-balance', from: 2, note: 'Phase 2: eyes closed, or stand on a folded towel.' },
+      { ex: 'sl-balance', to: 1 },
     ],
   },
   homeB: {
-    name: 'Home B', title: 'Knee control + feet + upper body and core', mins: '30 min', kind: 'home',
+    name: 'Home B', title: 'Knee control + feet + upper body and core', kind: 'home',
     items: [
-      { ex: 'sit-to-stand' }, { ex: 'step-down' }, { ex: 'wall-sit' }, { ex: 'band-tke' },
-      { ex: 'calf-raise' }, { ex: 'short-foot', sets: 2 }, { ex: 'push-up' }, { ex: 'band-row' }, { ex: 'plank' },
+      { ex: 'sit-to-stand' },
+      { ex: 'step-down', to: 1 },
+      { ex: 'step-down', from: 2, reps: 10, note: 'Phase 2: use a higher step, about 20 cm.' },
+      { ex: 'wall-sit', to: 1 },
+      { ex: 'wall-sit', from: 2, secs: [45, 60], note: 'Phase 2: longer holds.' },
+      { ex: 'band-tke' },
+      { ex: 'pogo-hops', from: 3 },
+      { ex: 'sl-hops', from: 3, fromWeek: 11 },
+      { ex: 'calf-raise', to: 1 },
+      { ex: 'bent-calf-raise', from: 2 },
+      { ex: 'short-foot', sets: 2 },
+      { ex: 'push-up' }, { ex: 'band-row' }, { ex: 'plank' },
     ],
   },
   homeC: {
-    name: 'Home C', title: 'Mobility and easy walk (optional)', mins: '15 to 20 min', kind: 'home', optional: true,
+    name: 'Home C', title: 'Mobility and easy walk (optional)', kind: 'home', optional: true,
     items: [
-      { ex: 'calf-stretch' }, { ex: 'hip-flexor-stretch' }, { ex: 'quad-stretch' }, { ex: 'easy-walk' },
+      { ex: 'calf-stretch' }, { ex: 'hip-flexor-stretch' }, { ex: 'quad-stretch' },
+      { ex: 'easy-walk', to: 1 },
+      { ex: 'easy-walk', from: 2, mins: [20, 30], note: 'Phase 2: longer, with gentle hills.' },
     ],
   },
   gym1: {
-    name: 'Gym day 1', title: 'Hips, hinge and knee strength', mins: '45 to 60 min', kind: 'gym',
+    name: 'Gym day 1', title: 'Hips, hinge and knee strength', kind: 'gym',
     items: [
       { ex: 'hip-thrust' }, { ex: 'cable-abduction' }, { ex: 'rdl' }, { ex: 'goblet-squat' },
       { ex: 'leg-press' }, { ex: 'cable-tke' }, { ex: 'pallof' },
     ],
   },
   gym2: {
-    name: 'Gym day 2', title: 'Hips, hinge and knee strength', mins: '45 to 60 min', kind: 'gym',
+    name: 'Gym day 2', title: 'Hips, hinge and knee strength', kind: 'gym',
     items: [
       { ex: 'hip-thrust' }, { ex: 'cable-abduction' }, { ex: 'rdl' }, { ex: 'goblet-squat' },
       { ex: 'leg-press' }, { ex: 'cable-tke' }, { ex: 'pallof' },
     ],
   },
   rest: {
-    name: 'Rest', title: 'Rest day', mins: '', kind: 'rest', items: [],
+    name: 'Rest', title: 'Rest day', kind: 'rest', items: [],
   },
 };
+
+// Items for a session at a phase and week.
+export function phaseItems(sid, phase, week) {
+  return (SESSIONS[sid]?.items || []).filter((it) =>
+    (it.from == null || phase >= it.from) && (it.to == null || phase <= it.to) && (it.fromWeek == null || week >= it.fromWeek));
+}
 
 // 0 = Sunday ... 6 = Saturday (JavaScript getDay order)
 export const SCHEDULE = {
@@ -404,8 +494,8 @@ export const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'
 
 export const PHASES = [
   { n: 1, weeks: [1, 4], name: 'Build the base', text: 'Bodyweight at home, light gym loads, easy cycling.' },
-  { n: 2, weeks: [5, 8], name: 'Progress', text: 'Single-leg versions, a slightly higher step, heavier gym loads, longer and hillier walks, longer wall sits.' },
-  { n: 3, weeks: [9, 12], name: 'Prepare for running', text: 'Add hopping drills on both legs, then single legs, at low volume. Keep the strength work.' },
+  { n: 2, weeks: [5, 8], name: 'Progress', text: 'Single-leg versions, a slightly higher step, heavier gym loads, longer and hillier walks, longer wall sits. Calf raises move to one leg (bodyweight), plus bent-knee calf raises.' },
+  { n: 3, weeks: [9, 12], name: 'Prepare for running', text: 'Add hopping drills on both legs (from week 9), then single legs (from week 11), at low volume. Keep the strength work.' },
   { n: 4, weeks: [13, null], name: 'Walk-run', text: 'Only after the milestones: walk-run intervals, for example 1 min run and 2 min walk for 20 min, three times a week, then gradually more running.' },
 ];
 
@@ -429,7 +519,8 @@ export const RULES = {
   effort: 'Work at 6 to 7 out of 10 and stop one rep before shaking or form breakdown.',
   pain: 'Stop or scale back if pain goes above 4 out of 10 during an exercise, or if next-morning soreness gets worse two days in a row.',
   gymLoad: 'Start light. Add weight only when every set is clean and pain stays at 3 out of 10 or lower.',
-  rest: 'Rest 45 to 60 s between home sets and 90 s between gym sets.',
+  rest: 'Rest 30 s after light floor work, 45 to 60 s after the knee exercises at home and 90 s between gym sets. Switch sides without resting. Fill home rests with short foot or single-leg balance.',
+  tke: 'Stop just short of locking the knee, and never push past straight.',
   running: [
     'Increase weekly running by no more than about 10%.',
     'Stop and drop back a step if pain goes above 3 out of 10 or soreness is worse the next morning.',

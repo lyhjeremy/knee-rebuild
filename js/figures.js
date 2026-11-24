@@ -190,6 +190,31 @@ const FIGS = {
     a: { hip: [56, F - 47], t: 90, leg: { to: [56, F - 4], ft: 0 }, arm: { to: [86, F - 62], bend: 1 }, props: [P.wall(90)] },
     b: { hip: [58, F - 53], t: 90, leg: { to: [59, F - 10], toe: [64, F - 1] }, arm: { to: [86, F - 66], bend: 1 }, props: [P.wall(90)] },
   },
+  'sl-calf-raise': {
+    hi: ['legN'],
+    a: { hip: [56, F - 47], t: 90, legN: { to: [56, F - 4], ft: 0 }, legF: { to: [44, F - 24], bend: -1, ft: -70 }, arm: { to: [86, F - 62], bend: 1 }, props: [P.wall(90)] },
+    b: { hip: [58, F - 53], t: 90, legN: { to: [59, F - 10], toe: [64, F - 1] }, legF: { to: [46, F - 30], bend: -1, ft: -70 }, arm: { to: [86, F - 66], bend: 1 }, props: [P.wall(90)] },
+  },
+  'bent-calf-raise': {
+    hi: ['legN'],
+    a: { hip: [52, F - 41], t: 84, leg: { to: [58, F - 4], ft: 0 }, arm: { to: [86, F - 58], bend: 1 }, props: [P.wall(90)] },
+    b: { hip: [54, F - 47], t: 84, leg: { to: [60, F - 10], toe: [65, F - 1] }, arm: { to: [86, F - 62], bend: 1 }, props: [P.wall(90)] },
+  },
+  'tib-raise': {
+    hi: ['shinN'],
+    a: { hip: [36, F - 45], t: 96, leg: { to: [52, F - 4], ft: 0 }, arm: { to: [36, F - 46], bend: 1 }, back: [P.wall(30)] },
+    b: { hip: [36, F - 45], t: 96, leg: { to: [52, F - 4], ft: 38 }, arm: { to: [36, F - 46], bend: 1 }, back: [P.wall(30)] },
+  },
+  'pogo-hops': {
+    hi: ['legN'],
+    a: { hip: [58, F - 49], t: 90, leg: { to: [60, F - 9], toe: [65, F - 1] }, arm: { to: [62, F - 52], bend: -1 } },
+    b: { hip: [58, F - 58], t: 90, leg: { to: [60, F - 17], toe: [66, F - 12] }, arm: { to: [62, F - 61], bend: -1 } },
+  },
+  'sl-hops': {
+    hi: ['legN'],
+    a: { hip: [58, F - 49], t: 90, legN: { to: [60, F - 9], toe: [65, F - 1] }, legF: { to: [46, F - 28], bend: -1, ft: -70 }, arm: { to: [64, F - 52], bend: -1 } },
+    b: { hip: [58, F - 57], t: 90, legN: { to: [60, F - 17], toe: [66, F - 12] }, legF: { to: [46, F - 36], bend: -1, ft: -70 }, arm: { to: [64, F - 60], bend: -1 } },
+  },
   'push-up': {
     hi: ['armN'],
     a: { hip: [44, F - 37], t: 51, leg: { a1: 231, a2: 231, ft: 280 }, arm: { to: [82, F - 40], bend: -1 }, back: [P.box(78, F - 40, 34, 40)] },
@@ -308,6 +333,8 @@ const ANIM = {
   'easy-walk': [0, 0.55, 0, 0.55], 'hip-thrust': [0.6, 1, 1, 2], 'cable-abduction': [0.5, 1, 0.3, 2.5],
   'rdl': [0.6, 3, 0.3, 1], 'goblet-squat': [0.6, 3, 0.3, 1], 'leg-press': [0.5, 1, 0.3, 2],
   'cable-tke': [0.6, 1, 2, 1], 'pallof': [0.6, 1, 2, 1],
+  'sl-calf-raise': [0.6, 1, 0.3, 3], 'bent-calf-raise': [0.6, 1, 0.3, 3], 'tib-raise': [0.6, 1, 0.3, 2],
+  'pogo-hops': [0, 0.22, 0, 0.22], 'sl-hops': [0.1, 0.24, 0, 0.24],
 };
 const lerp = (a, b, u) => a + (b - a) * u;
 const lerpP = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u)];
