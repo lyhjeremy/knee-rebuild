@@ -169,6 +169,11 @@ label > input, label > select { margin-top: 6px; }
 .figure-card figcaption { color: var(--muted); font-size: 13px; text-align: center; margin-top: 2px; }
 .fig { width: 100%; height: auto; display: block; }
 .fig.one { max-width: 62%; margin: 0 auto; }
+.fig-anim { max-width: 78%; margin: 0 auto; cursor: pointer; }
+.fig-anim.is-paused { opacity: 0.55; }
+.keyframes { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
+.keyframes .eyebrow { text-align: center; }
+.keyframe-labels { display: grid; grid-template-columns: 1fr 1fr; text-align: center; font-size: 13px; color: var(--muted); font-weight: 600; }
 .fs-ink, .fs-far { fill: none; stroke: var(--fig-ink); stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
 .fs-far { stroke: var(--fig-far); }
 .fs-hi { stroke: var(--accent); }
@@ -185,6 +190,13 @@ label > input, label > select { margin-top: 6px; }
 .fp-weight-end { stroke: var(--fig-ink); stroke-width: 4; stroke-linecap: round; }
 .fp-plate { fill: var(--fig-prop); }
 .fp-plate-line { stroke: var(--fig-prop); stroke-width: 4; stroke-linecap: round; }
+.media .media-item { margin: 0 0 14px; }
+.media .media-item:last-child { margin-bottom: 0; }
+.media img { display: block; max-width: 100%; max-height: 300px; width: auto; height: auto; margin: 0 auto; border-radius: 10px; background: #fff; }
+.media .gif img { width: 220px; height: 220px; max-height: none; object-fit: contain; }
+.media figcaption { font-size: 13px; color: var(--muted); text-align: center; margin-top: 6px; }
+.credit { font-size: 12px; }
+.credit a { color: inherit; }
 .demo-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; flex-wrap: wrap; }
 .demo-form { display: flex; gap: 8px; margin: -4px 0 14px; }
 .steps { padding-left: 22px; margin: 0 0 12px; }

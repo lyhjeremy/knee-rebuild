@@ -7,12 +7,18 @@ Open it in Safari on an iPhone: **https://lyhjeremy.github.io/knee-rebuild/**
 ## Screens
 
 - **Today**: the scheduled session (Home A, Home B, Home C or a gym day), each exercise in order with a done/partial/skipped status. You can swap the session for a day, page back to fill in a missed day, and log easy indoor cycling on any day.
-- **Exercise**: start and finish diagram, step-by-step cues, a demo link (YouTube search by default, or your own link), and the log: a row per set with a stepper, a kg field for gym lifts, a tick, and a hold timer for timed exercises. Ticking a set starts the rest timer (60 s at home, 90 s at the gym by default). Pain 0 to 10 and the note chips are optional.
+- **Exercise**: an animated diagram that moves at the exercise's tempo (tap to pause), the key positions below it, human demos where available (see below), step-by-step cues, a demo link (YouTube search by default, or your own link), and the log: a row per set with a stepper, a kg field for gym lifts, a tick, and a hold timer for timed exercises. Ticking a set starts the rest timer (60 s at home, 90 s at the gym by default). Pain 0 to 10 and the note chips are optional.
 - **History**: this week's sessions done, average pain and cycling minutes; the last 8 weeks as a table; per-exercise charts (top set weight for gym lifts, longest hold for timed work, total reps otherwise) and every log.
 - **Plan**: current week and phase, this week's schedule, the six milestones before running returns, the phases and the rules.
 - **Sync, backup and timer** (from Plan): Supabase sign-in, rest times, JSON backup export and import, reset.
 
 A "Ready to progress" tag appears when the last two attempts at an exercise were clean: every prescribed set done at the top of the target, pain 3 or lower, and no note such as "Form broke down" or "Knee discomfort".
+
+## Exercise media
+
+- **Animated diagrams** for every exercise, drawn by the app itself, so they work offline. Three holds (plank, single-leg balance, quad stretch) show one still position.
+- **3D-figure GIFs** for 15 exercises from [ExerciseDB](https://exercisedb.dev/)'s free API. They load from ExerciseDB's server when you're online and aren't stored in this repo, since ExerciseDB doesn't publish reuse terms for them. Where the GIF shows a variant (machine abduction, barbell glute bridge, lying quad stretch), a note under it says so.
+- **Photos of real people** for 5 exercises, copied from [wger](https://wger.de/) under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), credited under each photo and listed in `js/media.js`. Nothing else in wger matched the plan as real photos with a named author and no AI flag.
 
 ## Put it on the iPhone home screen
 
@@ -49,7 +55,8 @@ Every change is saved on the device straight away and queued. When you're online
 | `js/data.js` | The plan: exercises, cues, sessions, schedule, phases, milestones, rules |
 | `js/store.js` | Local state, plan logic, progression check, weekly summary |
 | `js/sync.js` | Supabase auth and sync over REST, no SDK |
-| `js/figures.js` | The stick-figure diagrams, built from a small skeleton with two-bone IK |
+| `js/figures.js` | The stick-figure diagrams and their animation, built from a small skeleton with two-bone IK |
+| `js/media.js`, `photos/` | GIF links and credited photos |
 | `js/timer.js`, `js/charts.js` | Hold, rest and block timer; History charts |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Offline support and home-screen install |
 | `supabase/schema.sql` | Tables, row-level security and the newest-wins trigger |

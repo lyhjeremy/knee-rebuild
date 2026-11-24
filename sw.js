@@ -1,9 +1,9 @@
 // Network first for the app's own files, so updates show up as soon as you're online;
 // the cached copy is used when there is no connection. Supabase calls are never cached.
-const CACHE = 'knee-rebuild-v1';
+const CACHE = 'knee-rebuild-v2';
 const SHELL = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest',
-  'js/app.js', 'js/data.js', 'js/store.js', 'js/sync.js', 'js/figures.js', 'js/timer.js', 'js/charts.js',
+  'js/app.js', 'js/data.js', 'js/store.js', 'js/sync.js', 'js/figures.js', 'js/timer.js', 'js/charts.js', 'js/media.js',
   'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 

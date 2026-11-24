@@ -7,7 +7,8 @@ import {
   emptyState, STATE_KEY,
 } from './store.js';
 import { createSync } from './sync.js';
-import { figureSVG, isSinglePose } from './figures.js';
+import { PHOTOS, GIFS } from './media.js';
+import { figureSVG, isSinglePose, animatedSVG, isAnimated, startAnimations } from './figures.js';
 import { createTimer, unlockAudio } from './timer.js';
 import { lineChart, attachCharts, shortDate } from './charts.js';
 
@@ -71,6 +72,7 @@ function render() {
   else if (r.name === 'plan') view.innerHTML = renderPlan();
   else if (r.name === 'settings') view.innerHTML = renderSettings();
   attachCharts(view);
+  startAnimations(view);
   document.querySelectorAll('.tabbar a').forEach((a) => {
     const tab = a.dataset.tab;
     const on = tab === r.name || (tab === 'today' && r.name === 'ex') || (tab === 'plan' && r.name === 'settings');
@@ -162,6 +164,32 @@ function ring(done, total) {
 }
 
 // ---------- Exercise detail + log ----------
+function mediaBlock(exId) {
+  const photos = PHOTOS[exId] || [];
+  const gifs = GIFS[exId] || [];
+  if (!photos.length && !gifs.length) return '';
+  const gifHtml = gifs.map((gif) => `<figure class="media-item gif">
+      <img src="${esc(gif.url)}" alt="${esc(gif.alt)}" width="180" height="180" loading="lazy" decoding="async" onerror="this.closest('figure').hidden=true">
+      <figcaption><strong>${esc(gif.label)}</strong>${gif.note ? `<br>${esc(gif.note)}` : ''}<br><span class="credit">3D animation: <a href="https://exercisedb.dev/" target="_blank" rel="noopener">ExerciseDB</a>, loads online</span></figcaption></figure>`).join('');
+  const photoHtml = photos.map((p) => `<figure class="media-item">
+      <img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async">
+      <figcaption>${p.note ? `${esc(p.note)}<br>` : ''}<span class="credit">Photo: ${esc(p.author)}, <a href="${esc(p.page)}" target="_blank" rel="noopener">wger.de</a>, <a href="${esc(p.license.url)}" target="_blank" rel="noopener">${esc(p.license.name)}</a></span></figcaption></figure>`).join('');
+  return `<section class="card media"><h2>${gifs.length && !photos.length ? 'Human-figure demo' : photos.length && !gifs.length ? 'Real-person demo' : 'Human demos'}</h2>${gifHtml}${photoHtml}</section>`;
+}
+function figureBlock(exId, ex) {
+  if (!isAnimated(exId)) {
+    return `<figure class="figure-card">${figureSVG(exId, { label: `${ex.name}: position to hold` })}
+      <figcaption>Hold this position. Green marks the working area.</figcaption></figure>`;
+  }
+  const loop = exId === 'cycling' || exId === 'easy-walk';
+  return `<figure class="figure-card">
+      ${animatedSVG(exId, { label: `${ex.name}, animated` })}
+      <figcaption>${loop ? 'Moving at an easy pace.' : 'Moving at the exercise tempo.'} Tap to pause. Green marks the working area.</figcaption>
+      ${loop ? '' : `<div class="keyframes"><p class="eyebrow">Key positions</p>${figureSVG(exId, { label: `${ex.name}: start and finish positions` })}
+        <div class="keyframe-labels"><span>1 ${exId === 'short-foot' ? 'Relaxed' : 'Start'}</span><span>2 ${exId === 'short-foot' ? 'Arch domed' : 'Finish'}</span></div></div>`}
+    </figure>`;
+}
+
 function currentSets(exId, date) {
   const st = store.state;
   const e = st.days[date]?.entries?.[exId];
@@ -205,8 +233,8 @@ function renderExercise(exId, date) {
     <h1 class="ex-title">${esc(ex.name)}</h1>
     <p class="rx">${esc(prescription(ex, item))}${esc(tempo)}</p>
     ${ready ? `<div class="callout"><strong>Ready to progress.</strong> The last two sessions were clean. ${esc(ex.progress)}</div>` : ''}
-    <figure class="figure-card">${figureSVG(exId, { label: `${ex.name}: start and finish positions` })}
-      <figcaption>${exId === 'short-foot' ? 'Relaxed, then arch domed.' : isSinglePose(exId) ? 'Hold this position. Green marks the working area.' : 'Start, then finish. Green marks the working area.'}</figcaption></figure>
+    ${figureBlock(exId, ex)}
+    ${mediaBlock(exId)}
     <div class="demo-row">
       <a class="btn secondary" href="${esc(demoUrl(exId))}" target="_blank" rel="noopener">${st.settings.demoLinks?.[exId] ? 'Watch my demo' : 'Watch demos on YouTube'}</a>
       <button type="button" class="link" data-action="edit-demo">${st.settings.demoLinks?.[exId] ? 'Change link' : 'Use my own link'}</button>

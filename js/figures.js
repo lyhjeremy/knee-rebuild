@@ -150,7 +150,9 @@ const FIGS = {
   },
   'side-plank': {
     hi: ['torso'], front: true,
-    one: { sh: [28, F - 16], t: 170, hd: 172, legF: { a1: -10, a2: -10, ft: 20 }, legN: { a1: -8, a2: -10, ft: 20 },
+    a: { sh: [28, F - 16], t: 156, hd: 165, legF: { a1: -2, a2: -2, ft: 20 }, legN: { a1: -1, a2: -2, ft: 20 },
+      armF: { a1: -90, a2: 180 }, armN: { to: [48, F - 10], bend: -1 } },
+    b: { sh: [28, F - 16], t: 170, hd: 172, legF: { a1: -10, a2: -10, ft: 20 }, legN: { a1: -8, a2: -10, ft: 20 },
       armF: { a1: -90, a2: 180 }, armN: { to: [50, F - 16], bend: -1 } },
   },
   'short-foot': { a: { custom: () => footFrame(false) }, b: { custom: () => footFrame(true) } },
@@ -225,8 +227,10 @@ const FIGS = {
   },
   'easy-walk': {
     hi: [],
-    one: { hip: [58, F - 46], t: 88, legN: { to: [72, F - 4], ft: 10 }, legF: { to: [44, F - 6], ft: -30 },
+    a: { hip: [58, F - 46], t: 88, legN: { to: [72, F - 4], ft: 10 }, legF: { to: [44, F - 6], ft: -30 },
       armN: { to: [48, F - 50], bend: 1 }, armF: { to: [68, F - 50], bend: -1 } },
+    b: { hip: [58, F - 46], t: 88, legF: { to: [72, F - 4], ft: 10 }, legN: { to: [44, F - 6], ft: -30 },
+      armF: { to: [48, F - 50], bend: 1 }, armN: { to: [68, F - 50], bend: -1 } },
   },
   'hip-thrust': {
     hi: ['hip'],
@@ -283,8 +287,131 @@ const FIGS = {
       arm: { to: [82, F - 66], bend: -1 },
       back: [`<path class="fp-prop" d="M 38 ${F - 50} H 50 M 44 ${F - 50} L 59 ${F - 26} L 84 ${F - 64} M 79 ${F - 66} H 88 M 59 ${F - 26} L 59 ${F - 4} M 40 ${F} H 80"/>
         <circle class="fp-prop" cx="59" cy="${F - 26}" r="9"/>`] },
+    // Pedalling loop: both feet follow the crank circle.
+    loop: { period: 1.6, at: (p) => {
+      const th = -p * 2 * Math.PI;
+      const ped = (o) => [59 + 9 * Math.cos(th + o), F - 26 - 9 * Math.sin(th + o)];
+      return { legN: { to: ped(0), ft: -10 }, legF: { to: ped(Math.PI), ft: -10 } };
+    } },
   },
 };
+
+// ---------- animation ----------
+// Seconds for each phase of the loop: hold start, move to finish, hold finish, move back.
+// Slow phases follow each exercise's tempo (for example 3 s down on squats).
+const ANIM = {
+  'glute-bridge': [0.8, 1, 2, 2], 'sl-glute-bridge': [0.8, 1, 1, 2], 'side-leg-raise': [0.6, 1, 0.4, 2.5],
+  'clamshell': [0.6, 1, 1, 2], 'side-plank': [0.8, 1.2, 2.5, 1.2], 'short-foot': [1, 0.8, 5, 0.8],
+  'sit-to-stand': [0.6, 1, 0.6, 3], 'step-down': [0.6, 3.5, 0.3, 1], 'wall-sit': [0.6, 2, 3, 1.5],
+  'band-tke': [0.6, 1, 2, 1], 'calf-raise': [0.6, 1, 0.3, 3], 'push-up': [0.5, 2, 0.2, 1],
+  'band-row': [0.5, 1, 1, 2], 'calf-stretch': [0.5, 1.5, 2.5, 1.5], 'hip-flexor-stretch': [0.8, 2, 2.5, 1.5],
+  'easy-walk': [0, 0.55, 0, 0.55], 'hip-thrust': [0.6, 1, 1, 2], 'cable-abduction': [0.5, 1, 0.3, 2.5],
+  'rdl': [0.6, 3, 0.3, 1], 'goblet-squat': [0.6, 3, 0.3, 1], 'leg-press': [0.5, 1, 0.3, 2],
+  'cable-tke': [0.6, 1, 2, 1], 'pallof': [0.6, 1, 2, 1],
+};
+const lerp = (a, b, u) => a + (b - a) * u;
+const lerpP = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u)];
+const ease = (u) => 0.5 - 0.5 * Math.cos(Math.PI * u);
+const LIMBS = { legN: ['hip', 'kneeN', 'ankleN', 'toeN'], legF: ['hip', 'kneeF', 'ankleF', 'toeF'], armN: ['sh', 'elbN', 'handN'], armF: ['sh', 'elbF', 'handF'] };
+
+// Rewrites a pose so two poses can be blended: the hip anchor, and each limb either as
+// joint angles (when both poses use angles) or as an end point plus bend direction.
+function normalize(s, J, useTo) {
+  const n = { hip: J.hip, t: s.t, hd: s.hd ?? s.t, front: s.front, hi: s.hi, back: s.back, props: s.props, set: {} };
+  for (const [k, joints] of Object.entries(LIMBS)) {
+    const g = s[k] || (k.startsWith('leg') ? s.leg : s.arm);
+    if (!useTo[k]) { n[k] = { a1: g.a1, a2: g.a2 ?? g.a1, ft: g.ft ?? 0 }; continue; }
+    const [root, mid, end, toe] = joints.map((j) => J[j]);
+    let bend = g.bend;
+    if (bend == null || !(g.to || g.rel)) {
+      const cross = (end[0] - root[0]) * (mid[1] - root[1]) - (end[1] - root[1]) * (mid[0] - root[0]);
+      bend = cross >= 0 ? 1 : -1;
+    }
+    n[k] = { to: end, bend, ft: g.ft ?? 0 };
+    if (toe) n[k].toe = toe;
+  }
+  return n;
+}
+function blend(a, b, u) {
+  const o = { ...(u < 0.5 ? a : b), hip: lerpP(a.hip, b.hip, u), t: lerp(a.t, b.t, u), hd: lerp(a.hd, b.hd, u) };
+  for (const k of Object.keys(LIMBS)) {
+    const x = a[k], y = b[k];
+    o[k] = x.to
+      ? { to: lerpP(x.to, y.to, u), bend: Math.sign(x.bend) === Math.sign(y.bend) ? lerp(x.bend, y.bend, u) : (u < 0.5 ? x.bend : y.bend), ...(x.toe ? { toe: lerpP(x.toe, y.toe, u) } : { ft: lerp(x.ft, y.ft, u) }) }
+      : { a1: lerp(x.a1, y.a1, u), a2: lerp(x.a2, y.a2, u), ft: lerp(x.ft, y.ft, u) };
+  }
+  o.set = {};
+  for (const j of new Set([...Object.keys(a.setJ), ...Object.keys(b.setJ)])) o.set[j] = lerpP(a.setJ[j], b.setJ[j], u);
+  return o;
+}
+function prepare(f) {
+  const style = (s) => ({ hi: f.hi, front: f.front, ...s });
+  const sa = style(f.a), sb = style(f.b);
+  const Ja = pose(sa), Jb = pose(sb);
+  const useTo = {};
+  for (const k of Object.keys(LIMBS)) {
+    const ga = sa[k] || (k.startsWith('leg') ? sa.leg : sa.arm);
+    const gb = sb[k] || (k.startsWith('leg') ? sb.leg : sb.arm);
+    const angles = (g) => g.a1 != null && !g.to && !g.rel && !g.toe;
+    useTo[k] = !(angles(ga) && angles(gb));
+  }
+  const na = normalize(sa, Ja, useTo), nb = normalize(sb, Jb, useTo);
+  const setKeys = new Set([...Object.keys(sa.set || {}), ...Object.keys(sb.set || {})]);
+  na.setJ = {}; nb.setJ = {};
+  for (const j of setKeys) { na.setJ[j] = Ja[j]; nb.setJ[j] = Jb[j]; }
+  return { na, nb };
+}
+
+const cache = {};
+// Markup for one moment of the loop, t in seconds.
+export function animatedFrame(id, t) {
+  const f = FIGS[id];
+  if (f.loop) {
+    const p = (t % f.loop.period) / f.loop.period;
+    return frame({ hi: f.hi, front: f.front, ...f.one, ...f.loop.at(p) });
+  }
+  const [h0, ab, h1, ba] = ANIM[id] || [0.6, 1.2, 0.8, 1.5];
+  const cyc = h0 + ab + h1 + ba;
+  const x = t % cyc;
+  const u = x < h0 ? 0 : x < h0 + ab ? ease((x - h0) / ab) : x < h0 + ab + h1 ? 1 : 1 - ease((x - h0 - ab - h1) / ba);
+  if (f.a.custom) {
+    return `<g opacity="${(1 - u).toFixed(3)}">${f.a.custom()}</g><g opacity="${u.toFixed(3)}">${f.b.custom()}</g>`;
+  }
+  const c = (cache[id] ||= prepare(f));
+  return frame(blend(c.na, c.nb, u));
+}
+export function isAnimated(id) { const f = FIGS[id]; return Boolean(f && (f.a || f.loop)); }
+
+// The animated figure: one frame that loops. Pair it with startAnimations().
+export function animatedSVG(id, { label = '' } = {}) {
+  const f = FIGS[id];
+  if (!isAnimated(id)) return '';
+  const cyc = f.loop ? f.loop.period : (ANIM[id] || [0.6, 1.2, 0.8, 1.5]).reduce((x, y) => x + y, 0);
+  const tops = Array.from({ length: 16 }, (_, k) => topOf(animatedFrame(id, (cyc * k) / 16)));
+  const y0 = Math.min(...tops, H - 50);
+  return `<svg class="fig fig-anim" data-fig="${id}" viewBox="0 ${y0} ${W} ${H - y0 + 2}" role="img" aria-label="${label}"><title>${label}</title><g class="fig-frame">${animatedFrame(id, 0)}</g></svg>`;
+}
+
+// Runs every animated figure under root until it leaves the page. Tap to pause.
+export function startAnimations(root) {
+  const reduce = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.querySelectorAll('svg.fig-anim').forEach((svg) => {
+    const g = svg.querySelector('.fig-frame');
+    const id = svg.dataset.fig;
+    let paused = reduce, t = 0, last = performance.now(), lastDraw = 0;
+    svg.classList.toggle('is-paused', paused);
+    svg.addEventListener('click', () => { paused = !paused; svg.classList.toggle('is-paused', paused); });
+    const step = (now) => {
+      if (!svg.isConnected) return;
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      if (!paused) t += dt;
+      if (now - lastDraw > 33) { g.innerHTML = animatedFrame(id, t); lastDraw = now; }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
 
 export function hasFigure(id) { return Boolean(FIGS[id]); }
 export function isSinglePose(id) { return Boolean(FIGS[id]?.one); }
